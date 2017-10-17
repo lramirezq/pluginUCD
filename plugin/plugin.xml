@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:server="http://www.urbancode.com/PluginServerXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <header>
+    <identifier id="com.treshtp.plugin" name="3HTP IIB" version="1"/>
+    <description>
+      Plugin para realizar tareas administrativas de IIB (WMB)
+	  </description>
+    <tag>3HTP Broker</tag>
+  </header>
+  <step-type name="CreateBroker">
+    <description>Realiza la creación de un Broker (Nodo de Integración)</description>
+    <properties>
+      <property name="broker" required="true">
+        <property-ui description="broker name" label="Broker Name" type="textBox"/>
+      </property>
+      <property name="qmanager" required="true">
+        <property-ui description="Queue Manager" label="Queue Manager" type="textBox"/>
+      </property>
+    </properties>
+    <!-- This is the standard post processing script. It sets the step to Success if the exit code
+    of the process was 0. Otherwise, the step fails. In order for a step to run correctly, it must
+    have a post processing script and that post processing script must set the status property
+    based off of the exit code. -->
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <!--The syntax of the command element is such that each argument goes on its own line.  
+    The arg attribute can be "value", "path", or "file". So this command will be:
+    ${GROOVY_HOME}/bin/groovy -cp src cmd.groovy ${PLUGIN_INPUT_PROPS} ${PLUGIN_OUTPUT_PROPS} -->
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="java/example.jar:lib/gson-2.2.4.jar"/>
+      <arg file="cmd.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  
+  
+  <step-type name="CreateExecutionGroup">
+    <description>Paso que realizar la creación de un execution group (Server Integration)</description>
+    <properties>
+      <property name="broker" required="true">
+        <property-ui description="broker name" label="Broker Name" type="textBox" />
+      </property>
+      <property name="exg" required="true">
+        <property-ui description="executiongroup name" label="Execution Group Name" type="textBox" />
+      </property>
+    </properties>
+    <!-- This is the standard post processing script. It sets the step to Success if the exit code
+    of the process was 0. Otherwise, the step fails. In order for a step to run correctly, it must
+    have a post processing script and that post processing script must set the status property
+    based off of the exit code. -->
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <!--The syntax of the command element is such that each argument goes on its own line.  
+    The arg attribute can be "value", "path", or "file". So this command will be:
+    ${GROOVY_HOME}/bin/groovy -cp src cmd.groovy ${PLUGIN_INPUT_PROPS} ${PLUGIN_OUTPUT_PROPS} -->
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="java/example.jar:lib/gson-2.2.4.jar"/>
+      <arg file="exg.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  
+  <step-type name="StartBroker">
+    <description>Paso para iniciar un Broker (Node Integration)</description>
+    <properties>
+      <property name="broker" required="true">
+        <property-ui description="broker name" label="Broker Name" type="textBox"/>
+      </property>
+      
+    </properties>
+    <!-- This is the standard post processing script. It sets the step to Success if the exit code
+    of the process was 0. Otherwise, the step fails. In order for a step to run correctly, it must
+    have a post processing script and that post processing script must set the status property
+    based off of the exit code. -->
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <!--The syntax of the command element is such that each argument goes on its own line.  
+    The arg attribute can be "value", "path", or "file". So this command will be:
+    ${GROOVY_HOME}/bin/groovy -cp src cmd.groovy ${PLUGIN_INPUT_PROPS} ${PLUGIN_OUTPUT_PROPS} -->
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="java/example.jar:lib/gson-2.2.4.jar"/>
+      <arg file="start_broker.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  
+  
+  <step-type name="DeployBar">
+    <description>Desplegar Bar</description>
+    <properties>
+      <property name="broker" required="true">
+        <property-ui description="broker name" label="Broker Name" type="textBox" default-value="${p:environment/iib.brokerName}"/>
+      </property>
+      <property name="exg" required="true">
+        <property-ui description="Execution Group" label="EXG Name" type="textBox" default-value="${p:environment/iib.exgGroup}"/>
+      </property>
+      
+       
+      
+       <property name="ambiente" required="true" >
+        <property-ui description="Enviroment" label="Enviroment to Deploy" type="textBox" default-value="${p:environment.name}"/>
+      </property>
+      
+    </properties>
+    <!-- This is the standard post processing script. It sets the step to Success if the exit code
+    of the process was 0. Otherwise, the step fails. In order for a step to run correctly, it must
+    have a post processing script and that post processing script must set the status property
+    based off of the exit code. -->
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <!--The syntax of the command element is such that each argument goes on its own line.  
+    The arg attribute can be "value", "path", or "file". So this command will be:
+    ${GROOVY_HOME}/bin/groovy -cp src cmd.groovy ${PLUGIN_INPUT_PROPS} ${PLUGIN_OUTPUT_PROPS} -->
+    
+    <!-- 
+  <command program="/bin/bash">
+      <arg value="sh deploy.sh"/>
+  </command>
+ -->
+    
+    
+   
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="java/example.jar:lib/gson-2.2.4.jar"/>
+      <arg file="deploy_bar.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+    
+  </step-type>
+ 
+ 
+ <step-type name="ActivarMonitoreo">
+    <description>Activar Monitoreo</description>
+    <properties>
+      <property name="broker" required="true">
+        <property-ui description="broker name" label="Broker Name" type="textBox" default-value="${p:environment/iib.brokerName}"/>
+      </property>
+      <property name="exg" required="true">
+        <property-ui description="Execution Group" label="EXG Name" type="textBox" default-value="${p:environment/iib.exgGroup}"/>
+      </property>
+      <property name="version" required="true">
+        <property-ui description="Version IIB (7 - 10)" label="IIB Version" type="textBox" default-value="7"/>
+      </property>
+    </properties>
+    <!-- This is the standard post processing script. It sets the step to Success if the exit code
+    of the process was 0. Otherwise, the step fails. In order for a step to run correctly, it must
+    have a post processing script and that post processing script must set the status property
+    based off of the exit code. -->
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <!--The syntax of the command element is such that each argument goes on its own line.  
+    The arg attribute can be "value", "path", or "file". So this command will be:
+    ${GROOVY_HOME}/bin/groovy -cp src cmd.groovy ${PLUGIN_INPUT_PROPS} ${PLUGIN_OUTPUT_PROPS} -->
+    
+    
+    
+   
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="java/example.jar:lib/gson-2.2.4.jar"/>
+      <arg file="activar_monitoreo.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+    
+  </step-type>
+ 
+</plugin>
